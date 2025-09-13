@@ -1,0 +1,15 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+dist/
+
+# DB / local data
+backend/polls.db
+
+# Env files
+.env
+.env.*
