@@ -8,7 +8,7 @@ node_modules/
 dist/
 
 # DB / local data
-backend/polls.db
+*.db
 
 # Env files
 .env
