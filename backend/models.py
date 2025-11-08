@@ -9,7 +9,7 @@ class Poll(SQLModel, table=True):
     """
     Poll represents a single 'Would You Rather' style question.
     Each row in the database corresponds to one poll with two possible options.
-    """
+    """  
     
     # Primary key: unique identifier for each poll.
     # Optional at creation time (None) because the database auto-generates it.
@@ -24,3 +24,10 @@ class Poll(SQLModel, table=True):
     votes_a: int = 0 # count of option A 
     votes_b: int = 0 # count of option B
     is_active: bool = True # soft delete flag
+    
+# Schema used when creating a new poll (via the API)
+class PollCreate(SQLModel):
+    question: str
+    option_a: str
+    option_b: str
+    category: str = "general"
