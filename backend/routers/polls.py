@@ -33,3 +33,23 @@ def create_poll(
 
     # Return the created poll
     return poll
+
+@router.get(
+    "/",
+    response_model=list[Poll]
+)
+def list_polls(
+    session: Session = Depends(get_session),
+):
+    '''
+    Retrieve all active polls from the database.
+    Returns an empty list if no polls exist.
+    '''
+    
+    # Build the query to select all Poll records
+    statement = select(Poll).where(Poll.is_active == True)
+    
+    # Execute the query and get all results
+    polls = session.exec(statement).all()
+    
+    return polls
