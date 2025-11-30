@@ -2,6 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from models import Poll, PollCreate
 from db import get_session
+from typing import Literal
+from pydantic import BaseModel
+
+# Requesting Models
+class VoteRequest(BaseModel):
+    choice: Literal["a","b"]
 
 
 # Create a router to group all poll-related endpoints
@@ -53,3 +59,52 @@ def list_polls(
     polls = session.exec(statement).all()
     
     return polls
+
+@router.get(
+    "/{poll_id}",
+    response_model=Poll,
+)
+def get_poll(
+    poll_id: int,
+    session: Session = Depends(get_session)
+):
+    '''
+    Retrieve a single active poll by its ID.
+    Returns 404 if the poll doesn't exist or is inactive 
+    '''
+    poll = session.get(Poll, poll_id)
+    
+    if poll is None or not poll.is_active:
+        raise HTTPException(status_code=404, detail="Poll not found")
+
+    return poll
+
+@router.post(
+    "/{poll_id}/vote",
+    response_model = Poll,
+)
+def vote_on_poll(
+    poll_id: int,
+    vote: VoteRequest,
+    session: Session = Depends(get_session),
+):
+    '''
+    Cast a vote on a poll. 
+    Increments votes_a or votes_b based on choice.
+    '''
+    poll = session.get(Poll, poll_id)
+    
+    if poll is None or not poll.is_active:
+        raise HTTPException(status_code=404, detail="Poll not found")
+    
+    # Increment the appropriate vote counter
+    if vote.choice == "a":
+        poll.votes_a += 1
+    else:
+        poll.votes_b += 1
+    
+    session.add(poll)
+    session.commit()
+    session.refresh(poll)
+    
+    return poll
