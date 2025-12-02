@@ -4,6 +4,7 @@ from models import Poll, PollCreate
 from db import get_session
 from typing import Literal
 from pydantic import BaseModel
+import random 
 
 # Requesting Models
 class VoteRequest(BaseModel):
@@ -59,6 +60,22 @@ def list_polls(
     polls = session.exec(statement).all()
     
     return polls
+
+
+@router.get("/random", response_model=Poll)
+def get_random_poll(session: Session = Depends(get_session)):
+    """Return a random active poll"""
+    statement = select(Poll).where(Poll.is_active == True)
+    polls = session.exec(statement).all()
+    
+    if not polls:
+        raise HTTPException(
+            status_code=404, 
+            detail="No active polls available"
+        )
+    
+    return random.choice(polls)
+
 
 @router.get(
     "/{poll_id}",

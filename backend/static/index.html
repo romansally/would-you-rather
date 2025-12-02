@@ -1,231 +1,365 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Would You Rather?</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        padding: 2rem;
-      }
-
-      .container {
-        max-width: 800px;
-        margin: 0 auto;
-      }
-
-      h1 {
-        color: white;
-        text-align: center;
-        margin-bottom: 2rem;
-        font-size: 2.5rem;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-      }
-
-      .poll {
-        background: white;
-        border-radius: 16px;
-        padding: 2rem;
-        margin-bottom: 1.5rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        transition: transform 0.2s;
-      }
-
-      .poll:hover {
-        transform: translateY(-4px);
-      }
-
-      .question {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: #2d3748;
-        margin-bottom: 1.5rem;
-      }
-
-      .category {
-        display: inline-block;
-        background: #edf2f7;
-        color: #4a5568;
-        padding: 0.25rem 0.75rem;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 500;
-        margin-bottom: 1rem;
-      }
-
-      .options {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-        margin-bottom: 1rem;
-      }
-
-      .option {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-      }
-
-      button {
-        background: #667eea;
-        color: white;
-        border: none;
-        padding: 1rem;
-        border-radius: 12px;
-        font-size: 1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-
-      button:hover {
-        background: #5a67d8;
-        transform: scale(1.02);
-      }
-
-      button:active {
-        transform: scale(0.98);
-      }
-
-      .option-text {
-        text-align: center;
-        color: #4a5568;
-        font-weight: 500;
-      }
-
-      .votes {
-        display: flex;
-        justify-content: space-around;
-        padding-top: 1rem;
-        border-top: 2px solid #edf2f7;
-        color: #718096;
-        font-size: 0.9rem;
-      }
-
-      .vote-count {
-        font-weight: 600;
-        color: #667eea;
-      }
-
-      .loading {
-        text-align: center;
-        color: white;
-        font-size: 1.5rem;
-        margin-top: 4rem;
-      }
-
-      .empty {
-        text-align: center;
-        color: white;
-        font-size: 1.25rem;
-        margin-top: 4rem;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1>🤔 Would You Rather?</h1>
-      <div id="polls" class="loading">Loading polls...</div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Would You Rather?</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      color: white;
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 2.5rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .controls {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    
+    .button {
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 999px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.2s;
+    }
+    
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .button:active {
+      transform: translateY(0);
+    }
+    
+    .button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .random-button {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    
+    .all-button {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .poll {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+    
+    .poll:hover {
+      transform: translateY(-4px);
+    }
+    
+    .category {
+      display: inline-block;
+      background: #edf2f7;
+      color: #4a5568;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+    
+    .question {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 1.5rem;
+    }
+    
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .option {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .vote-button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 1rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .vote-button:hover {
+      background: #5a67d8;
+      transform: scale(1.02);
+    }
+    
+    .vote-button:active {
+      transform: scale(0.98);
+    }
+    
+    .vote-button:disabled {
+      background: #cbd5e0;
+      cursor: not-allowed;
+    }
+    
+    .option-text {
+      text-align: center;
+      color: #4a5568;
+      font-weight: 500;
+    }
+    
+    .votes {
+      display: flex;
+      justify-content: space-around;
+      padding-top: 1rem;
+      border-top: 2px solid #edf2f7;
+      color: #718096;
+      font-size: 0.9rem;
+    }
+    
+    .vote-count {
+      font-weight: 600;
+      color: #667eea;
+    }
+    
+    .loading, .empty {
+      text-align: center;
+      color: white;
+      font-size: 1.25rem;
+      margin-top: 4rem;
+    }
+    
+    .mode-indicator {
+      text-align: center;
+      color: white;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🤔 Would You Rather?</h1>
+    
+    <div class="controls">
+      <button id="all-btn" class="button all-button">
+        📋 All Polls
+      </button>
+      <button id="random-btn" class="button random-button">
+        🎲 Surprise Me
+      </button>
     </div>
+    
+    <div id="mode" class="mode-indicator"></div>
+    <div id="polls" class="loading">Loading polls...</div>
+  </div>
 
-    <script>
-      async function loadPolls() {
-        const container = document.getElementById("polls");
-
-        try {
-          const res = await fetch("/polls/");
-          const polls = await res.json();
-
-          if (!Array.isArray(polls) || polls.length === 0) {
+  <script>
+    const container = document.getElementById("polls");
+    const modeIndicator = document.getElementById("mode");
+    const allButton = document.getElementById("all-btn");
+    const randomButton = document.getElementById("random-btn");
+    
+    let currentMode = "all"; // "all" or "random"
+    
+    // Update button states based on current mode
+    function updateButtonStates() {
+      if (currentMode === "all") {
+        allButton.disabled = true;
+        randomButton.disabled = false;
+      } else {
+        allButton.disabled = false;
+        randomButton.disabled = true;
+      }
+    }
+    
+    // Render polls to the DOM
+    function renderPolls(polls, mode = "all") {
+      if (!Array.isArray(polls) || polls.length === 0) {
+        container.className = "empty";
+        container.textContent = "No polls yet! Create some at /docs";
+        modeIndicator.textContent = "";
+        return;
+      }
+      
+      container.className = "";
+      container.innerHTML = "";
+      
+      // Update mode indicator
+      if (mode === "random") {
+        modeIndicator.textContent = "🎲 Random poll selected";
+      } else {
+        modeIndicator.textContent = `Showing ${polls.length} poll${polls.length !== 1 ? 's' : ''}`;
+      }
+      
+      polls.forEach((poll) => {
+        const pollEl = document.createElement("div");
+        pollEl.className = "poll";
+        pollEl.innerHTML = `
+          <div class="category">${poll.category}</div>
+          <div class="question">${poll.question}</div>
+          <div class="options">
+            <div class="option">
+              <button class="vote-button" data-poll-id="${poll.id}" data-choice="a">
+                Vote A
+              </button>
+              <div class="option-text">${poll.option_a}</div>
+            </div>
+            <div class="option">
+              <button class="vote-button" data-poll-id="${poll.id}" data-choice="b">
+                Vote B
+              </button>
+              <div class="option-text">${poll.option_b}</div>
+            </div>
+          </div>
+          <div class="votes">
+            <div>Option A: <span class="vote-count" data-votes-a>${poll.votes_a}</span> votes</div>
+            <div>Option B: <span class="vote-count" data-votes-b>${poll.votes_b}</span> votes</div>
+          </div>
+        `;
+        
+        const buttons = pollEl.querySelectorAll(".vote-button");
+        const votesASpan = pollEl.querySelector("[data-votes-a]");
+        const votesBSpan = pollEl.querySelector("[data-votes-b]");
+        
+        buttons.forEach((btn) => {
+          btn.addEventListener("click", async (e) => {
+            const pollId = e.target.dataset.pollId;
+            const choice = e.target.dataset.choice;
+            await vote(pollId, choice, votesASpan, votesBSpan, buttons);
+          });
+        });
+        
+        container.appendChild(pollEl);
+      });
+    }
+    
+    // Load all polls
+    async function loadAllPolls() {
+      currentMode = "all";
+      updateButtonStates();
+      container.className = "loading";
+      container.textContent = "Loading polls...";
+      modeIndicator.textContent = "";
+      
+      try {
+        const res = await fetch("/polls/");
+        const polls = await res.json();
+        renderPolls(polls, "all");
+      } catch (err) {
+        console.error("Error loading polls:", err);
+        container.className = "empty";
+        container.textContent = "Failed to load polls. Check console.";
+        modeIndicator.textContent = "";
+      }
+    }
+    
+    // Load a random poll
+    async function loadRandomPoll() {
+      currentMode = "random";
+      updateButtonStates();
+      container.className = "loading";
+      container.textContent = "Picking a random poll...";
+      modeIndicator.textContent = "";
+      
+      try {
+        const res = await fetch("/polls/random");
+        
+        if (!res.ok) {
+          if (res.status === 404) {
             container.className = "empty";
-            container.textContent = "No polls yet! Create some at /docs";
+            container.textContent = "No polls available.";
+            modeIndicator.textContent = "";
             return;
           }
-
-          container.className = "";
-          container.innerHTML = "";
-
-          polls.forEach((poll) => {
-            const pollEl = document.createElement("div");
-            pollEl.className = "poll";
-            pollEl.innerHTML = `
-            <div class="category">${poll.category}</div>
-            <div class="question">${poll.question}</div>
-            <div class="options">
-              <div class="option">
-                <button data-poll-id="${poll.id}" data-choice="a">Vote A</button>
-                <div class="option-text">${poll.option_a}</div>
-              </div>
-              <div class="option">
-                <button data-poll-id="${poll.id}" data-choice="b">Vote B</button>
-                <div class="option-text">${poll.option_b}</div>
-              </div>
-            </div>
-            <div class="votes">
-              <div>Option A: <span class="vote-count" data-votes-a>${poll.votes_a}</span> votes</div>
-              <div>Option B: <span class="vote-count" data-votes-b>${poll.votes_b}</span> votes</div>
-            </div>
-          `;
-
-            const buttons = pollEl.querySelectorAll("button");
-            const votesASpan = pollEl.querySelector("[data-votes-a]");
-            const votesBSpan = pollEl.querySelector("[data-votes-b]");
-
-            buttons.forEach((btn) => {
-              btn.addEventListener("click", async (e) => {
-                const pollId = e.target.dataset.pollId;
-                const choice = e.target.dataset.choice;
-                await vote(pollId, choice, votesASpan, votesBSpan, buttons);
-              });
-            });
-
-            container.appendChild(pollEl);
-          });
-        } catch (err) {
-          console.error("Error loading polls:", err);
-          container.className = "empty";
-          container.textContent = "Failed to load polls. Check console.";
+          throw new Error(`Random poll failed: ${res.status}`);
         }
+        
+        const poll = await res.json();
+        renderPolls([poll], "random");
+      } catch (err) {
+        console.error("Error loading random poll:", err);
+        container.className = "empty";
+        container.textContent = "Failed to load random poll. Check console.";
+        modeIndicator.textContent = "";
       }
-
-      async function vote(pollId, choice, votesASpan, votesBSpan, buttons) {
-        // Disable buttons to prevent double-voting
-        buttons.forEach((btn) => (btn.disabled = true));
-
-        try {
-          const res = await fetch(`/polls/${pollId}/vote`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ choice }),
-          });
-
-          if (!res.ok) {
-            throw new Error(`Vote failed: ${res.status}`);
-          }
-
-          const updated = await res.json();
-          votesASpan.textContent = updated.votes_a;
-          votesBSpan.textContent = updated.votes_b;
-        } catch (err) {
-          console.error("Error voting:", err);
-          alert("Failed to vote. Try again.");
-        } finally {
-          // Re-enable buttons
-          buttons.forEach((btn) => (btn.disabled = false));
+    }
+    
+    // Submit a vote
+    async function vote(pollId, choice, votesASpan, votesBSpan, buttons) {
+      buttons.forEach((btn) => (btn.disabled = true));
+      
+      try {
+        const res = await fetch(`/polls/${pollId}/vote`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ choice }),
+        });
+        
+        if (!res.ok) {
+          throw new Error(`Vote failed: ${res.status}`);
         }
+        
+        const updated = await res.json();
+        votesASpan.textContent = updated.votes_a;
+        votesBSpan.textContent = updated.votes_b;
+      } catch (err) {
+        console.error("Error voting:", err);
+        alert("Failed to vote. Try again.");
+      } finally {
+        buttons.forEach((btn) => (btn.disabled = false));
       }
-
-      // Load polls when page loads
-      loadPolls();
-    </script>
-  </body>
+    }
+    
+    // Wire up buttons
+    allButton.addEventListener("click", loadAllPolls);
+    randomButton.addEventListener("click", loadRandomPoll);
+    
+    // Initial load: show all polls
+    loadAllPolls();
+  </script>
+</body>
 </html>
