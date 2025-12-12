@@ -46,15 +46,21 @@ def create_poll(
     response_model=list[Poll]
 )
 def list_polls(
+    include_inactive: bool = False,
     session: Session = Depends(get_session),
 ):
     '''
-    Retrieve all active polls from the database.
-    Returns an empty list if no polls exist.
+    List Polls.
+    - By Default: Returns only Active polls (for public UI)
+    - include_inactive=true: return all polls (for admin)
     '''
     
     # Build the query to select all Poll records
-    statement = select(Poll).where(Poll.is_active == True)
+    statement = select(Poll)  # start with ALL polls
+    
+    # If poll is NOT inactive -> Poll = True
+    if not include_inactive:
+        statement = statement.where(Poll.is_active == True)
     
     # Execute the query and get all results
     polls = session.exec(statement).all()
@@ -77,6 +83,53 @@ def get_random_poll(session: Session = Depends(get_session)):
     return random.choice(polls)
 
 
+@router.patch(
+    "/{poll_id}/deactivate",
+    response_model=Poll,
+)
+def deactivate_poll(
+    poll_id: int,
+    session: Session = Depends(get_session),
+):
+    """
+    Soft-delete a poll by marking it inactive.
+    It will no longer appear in public listings.
+    """
+    poll = session.get(Poll, poll_id)
+    if poll is None:
+        raise HTTPException(status_code=404, detail="Poll not found")
+    
+    poll.is_active = False
+    session.add(poll)
+    session.commit()
+    session.refresh(poll)
+    return poll
+
+
+@router.patch(
+    "/{poll_id}/reactivate",
+    response_model=Poll,
+)
+def reactivate_poll(
+    poll_id: int,
+    session: Session = Depends(get_session),
+):
+    """
+    Reactivate a poll by marking it active again.
+    Useful for undoing a soft delete.
+    """
+    poll = session.get(Poll, poll_id)
+    if poll is None:
+        raise HTTPException(status_code=404, detail="Poll not found")
+
+    poll.is_active = True
+    session.add(poll)
+    session.commit()
+    session.refresh(poll)
+    return poll
+
+
+
 @router.get(
     "/{poll_id}",
     response_model=Poll,
@@ -95,6 +148,7 @@ def get_poll(
         raise HTTPException(status_code=404, detail="Poll not found")
 
     return poll
+
 
 @router.post(
     "/{poll_id}/vote",
