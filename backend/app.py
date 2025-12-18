@@ -1,13 +1,17 @@
 # backend/app.py
 
 from pathlib import Path
+from dotenv import load_dotenv
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
-from routers.polls import router as polls_router  # polls API routes
+from routers.polls import router as polls_router
 
+# Load environment variables from .env file
+# CRITICAL: This must happen BEFORE any code tries to access os.getenv()
+load_dotenv()
 
 # Main FastAPI app
 app = FastAPI(title="Would You Rather API")
@@ -29,6 +33,13 @@ app.mount("/static", StaticFiles(directory=str(static_path)), name="static")
 
 @app.get("/play")
 def play():
-    """Serve the simple UI that talks to the polls API."""
+    """Serve the public voting UI."""
     index_path = static_path / "index.html"
     return FileResponse(index_path)
+
+
+@app.get("/admin")
+def admin():
+    """Serve the admin UI (to be created in Step 2)."""
+    admin_path = static_path / "admin.html"
+    return FileResponse(admin_path)
