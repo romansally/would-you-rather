@@ -8,8 +8,8 @@ def init_db():
     from models import Poll
     SQLModel.metadata.create_all(engine) # looks at all models + builds the tables in database file
     
-# add session maker
+# add session maker (UPDATED TO FIX LEAK)
 def get_session():
-    return Session(engine)
-    
+    with Session(engine) as session:
+        yield session
     
