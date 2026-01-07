@@ -2,8 +2,8 @@
 
 A full-stack interactive polling application built with **FastAPI** and **Vanilla JavaScript**. Features public voting, secure admin dashboard, and RESTful API.
 
-**Live Demo:** _Coming soon_  
-**API Docs (local):** `http://127.0.0.1:8000/docs`
+**Live Demo:** https://would-you-rather-demo.onrender.com/play  
+**API Docs:** https://would-you-rather-demo.onrender.com/docs
 
 ---
 
