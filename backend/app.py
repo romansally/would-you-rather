@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
 from routers.polls import router as polls_router
+from db import init_db
 
 # Load environment variables from .env file
 # CRITICAL: This must happen BEFORE any code tries to access os.getenv()
@@ -15,6 +16,10 @@ load_dotenv()
 
 # Main FastAPI app
 app = FastAPI(title="Would You Rather API")
+
+@app.on_event("startup")
+def on_startup():
+    init_db()
 
 # Attach polls router (/polls endpoints)
 app.include_router(polls_router)
