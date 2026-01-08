@@ -5,6 +5,7 @@ A full-stack interactive polling application built with **FastAPI** and **Vanill
 **Live Demo:** https://would-you-rather-demo.onrender.com/play  
 **API Docs:** https://would-you-rather-demo.onrender.com/docs
 
+**Note:** This demo uses SQLite on Render’s free tier, so the database may reset after inactivity. If polls are missing, re-seed with `backend/seed_production.sh`.
 ---
 
 ## 📸 Screenshots
